@@ -1,0 +1,23 @@
+# LaTeX build artifacts — do not commit
+*.aux
+*.log
+*.out
+*.toc
+*.lot
+*.lof
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.synctex.gz
+*.synctex(busy)
+*.idx
+*.ilg
+*.ind
+*.nav
+*.snm
+*.vrb
+*.dvi
+*.ps
+# Keep the generated PDF if desired — comment out to track it
+# *.pdf
