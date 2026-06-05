@@ -202,6 +202,9 @@ function renderMap(geojson, type) {
                 <div style="font-weight: 700; color: #ef4444; margin-bottom: 4px;">${normName}</div>
                 <div style="font-size: 0.8rem;">Predicted Cases: <strong>${data ? data.predicted_cases : 'N/A'}</strong></div>
                 <div style="font-size: 0.8rem;">Risk Score: <strong>${data ? data.risk_score + '%' : 'N/A'}</strong></div>
+                ${data && data.risk_score_lower != null && data.risk_score_upper != null
+                    ? `<div style="font-size: 0.75rem; color: #94a3b8; margin-top: 2px;">Confidence range: ${data.risk_score_lower}% – ${data.risk_score_upper}%</div>`
+                    : ''}
                 <div style="font-size: 0.7rem; color: #94a3b8; margin-top: 4px;">
                     ${isPreviewState ? 'Preview only — detailed Karnataka data is live now.' : `Click to ${type === 'state' ? 'drill down' : 'view details'}`}
                 </div>
@@ -270,7 +273,16 @@ function showDistrictDetails(name, dataSet) {
             <div class="stat-item">
                 <p class="label">Risk Score</p>
                 <p class="value">${data.risk_score}%</p>
-                <p class="trend">Machine Learning Prediction</p>
+                ${(data.risk_score_lower != null && data.risk_score_upper != null)
+                    ? `<p class="trend" style="color: #94a3b8; font-size: 0.78rem; display: flex; align-items: center; gap: 4px;">
+                           <i data-lucide="shield" style="width:13px;height:13px;"></i>
+                           Confidence&nbsp;range:&nbsp;${data.risk_score_lower}%&nbsp;–&nbsp;${data.risk_score_upper}%
+                       </p>
+                       <div style="position:relative; height:5px; background:rgba(255,255,255,0.08); border-radius:3px; margin-top:6px; overflow:hidden;">
+                           <div style="position:absolute; left:${data.risk_score_lower}%; width:${data.risk_score_upper - data.risk_score_lower}%; height:100%; background: linear-gradient(90deg,#3b82f6,#60a5fa); border-radius:3px;"></div>
+                           <div style="position:absolute; left:${data.risk_score}%; transform:translateX(-50%); width:3px; height:100%; background:#ef4444; border-radius:3px;"></div>
+                       </div>`
+                    : `<p class="trend">Machine Learning Prediction</p>`}
             </div>
             <div class="stat-item">
                 <p class="label">Primary Risk Driver</p>
