@@ -1,439 +1,479 @@
 <div align="center">
-  <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=1200&q=80" alt="EpiSentinel Banner" width="100%" style="border-radius: 12px; margin-bottom: 20px;" />
 
-  # 🛡️ EpiSentinel
-  ### *AI-Powered Outbreak Prediction & Grounded Decision Advisory System*
+# 🛡️ EpiSentinel 2.0
+### *Proactive Dengue Outbreak Forecasting for Karnataka, India*
 
-  [![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
-  [![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org)
-  [![D3.js](https://img.shields.io/badge/D3.js-F9A03F?style=for-the-badge&logo=d3.js&logoColor=white)](https://d3js.org)
-  [![Gemini](https://img.shields.io/badge/Gemini_AI-8E75C2?style=for-the-badge&logo=google-gemini&logoColor=white)](https://deepmind.google/technologies/gemini)
-  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
+[![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
+[![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org)
+[![XGBoost](https://img.shields.io/badge/XGBoost-FF6600?style=for-the-badge&logo=xgboost&logoColor=white)](https://xgboost.ai)
+[![D3.js](https://img.shields.io/badge/D3.js-F9A03F?style=for-the-badge&logo=d3.js&logoColor=white)](https://d3js.org)
+[![Gemini](https://img.shields.io/badge/Gemini_AI-8E75C2?style=for-the-badge&logo=google-gemini&logoColor=white)](https://deepmind.google/technologies/gemini)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
-  **Empowering public health leadership with proactive, block-level dengue risk forecasting and grounded action plans 14 days before clinical peaks.**
+**Predicting district-level dengue outbreaks 7 days in advance across Karnataka — shifting public health from reactive reporting to proactive intervention.**
+
 </div>
 
 ---
 
 ## 📌 Table of Contents
-- [📖 Introduction \& The Biological Problem](#-introduction--the-biological-problem)
-  - [The Core Challenge](#the-core-challenge)
-  - [The Biological Clock: Why 14 Days Matters](#the-biological-clock-why-14-days-matters)
-  - [EpiSentinel's Modern Paradigm Shift](#episentinels-modern-paradigm-shift)
-- [⚡ Key Features by Persona](#-key-features-by-persona)
-  - [🏥 Operational \& Strategic Personas](#-operational--strategic-personas)
-  - [⚙️ Core Technical Capabilities](#️core-technical-capabilities)
-- [🛠️ Tech Stack Breakdown](#️-tech-stack-breakdown)
-- [🚀 Getting Started](#-getting-started)
-  - [📋 Prerequisites](#-prerequisites)
-  - [🔑 Environment Configuration](#-environment-configuration)
-  - [📦 Installation Steps](#-installation-steps)
-  - [💻 Running Locally](#-running-locally)
-- [📂 Project Directory Structure](#-project-directory-structure)
-- [🔌 API Endpoints \& Basic Usage](#-api-endpoints--basic-usage)
-  - [1. District Advisory Chat (`/chat/district`)](#1-district-advisory-chat-chatdistrict)
-  - [2. State-Level Aggregate Chat (`/chat/state`)](#2-state-level-aggregate-chat-chatstate)
-  - [3. Guardrail and SOP Violations Handler](#3-guardrail-and-sop-violations-handler)
-- [🏗️ System Architecture \& Data Pipeline](#️-system-architecture--data-pipeline)
-- [🚢 Deployment \& CI/CD Pipeline](#-deployment--cicd-pipeline)
-- [🤝 Contributing \& Code of Conduct](#-contributing--code-of-conduct)
-- [📄 License](#-license)
+
+- [What It Does](#-what-it-does)
+- [The Problem It Solves](#-the-problem-it-solves)
+- [Model & Results](#-model--results)
+  - [What Is Predicted](#what-is-predicted)
+  - [Training Data](#training-data)
+  - [Experiments & Metrics](#experiments--metrics)
+  - [Final Production Model](#final-production-model)
+  - [Key Features (SHAP)](#key-features-shap)
+- [System Architecture](#-system-architecture)
+- [Tech Stack](#-tech-stack)
+- [Project Structure](#-project-structure)
+- [Getting Started](#-getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Environment Setup](#environment-setup)
+  - [Running Locally](#running-locally)
+- [API Reference](#-api-reference)
+- [Contributing](#-contributing)
+- [License](#-license)
 
 ---
 
-## 📖 Introduction & The Biological Problem
+## 🎯 What It Does
 
-### The Core Challenge
-District Health Officers (DHOs) and block-level health workers in high-burden regions of India struggle to make proactive resource allocation decisions. Deploying field teams, initiating chemical vector control, and pre-positioning medical supplies at sub-district resolution are often delayed until an outbreak has already peaked. 
+EpiSentinel is a **district-level dengue outbreak prediction and advisory dashboard** for the state of Karnataka. It takes this week's epidemiological and climate data for each district and answers one critical question:
 
-Existing public health surveillance frameworks, such as the Integrated Disease Surveillance Programme (IDSP) and the National Vector Borne Disease Control Programme (NVBDCP), operate with a passive, retrospective reporting workflow. Outbreak data is typically delayed by a **21-day administrative lag**, lacks sub-district granularity, and fails to integrate real-time environmental indicators. Responses are, by definition, reactive—missing the critical biological window of intervention.
+> **Will this district experience a dengue outbreak next week?**
 
-### The Biological Clock: Why 14 Days Matters
-Dengue transmission has a fixed, predictable environmental and biological timeline:
+The output is a risk score (0–100%) per district, powering an interactive D3.js map and a RAG-powered AI chatbot that generates SOP-grounded action plans for health officers.
+
+---
+
+## 🦟 The Problem It Solves
+
+Existing surveillance frameworks (IDSP, NVBDCP) are **reactive**. Outbreak reports arrive 2–3 weeks after cases have already peaked. By then, deploying field teams and pre-positioning medical supplies is too late.
+
+Dengue has a predictable biological timeline:
 
 ```
-[Heavy Rainfall / Humidity Spike]
-               │
-               ▼
- [Stagnant Water Accumulation]   (7 - 10 Days)
-               │
-               ▼
-  [Vector Breeding & Hatching]   (Extrinsic Incubation: 8 - 12 Days)
-               │
-               ▼
-   [Infected Mosquito Bites]     (Intrinsic Incubation: 4 - 7 Days)
-               │
-               ▼
-     [Clinical Outbreak Peak]    (Total Biological Lag: ~14 - 21 Days)
+[Rainfall / Humidity Spike]
+          │
+          ▼  7–10 days
+[Stagnant Water / Mosquito Breeding]
+          │
+          ▼  8–12 days (Extrinsic Incubation)
+[Infected Mosquito Bites]
+          │
+          ▼  4–7 days (Intrinsic Incubation)
+[Clinical Outbreak Peak]
 ```
 
-EpiSentinel leverages this biological lag. By monitoring daily climate anomalies and satellite data *before* cases begin to rise, it gives health administrators a **7-to-14-day early warning forecast**, buying the time needed to deploy preventative vector control measures.
-
-### EpiSentinel's Modern Paradigm Shift
-EpiSentinel is an advanced epidemic risk visualization, prediction, and advisory dashboard designed for the state of Karnataka. It shifts public health strategy from reactive firefighting to proactive, data-driven prevention:
-1. **Dynamic Forecasting**: Blends time-series neural networks (LSTMs) and gradient boosting ensembles (XGBoost/Random Forest) to output district-specific outbreak probabilities.
-2. **Explainable AI (XAI)**: Utilizes **SHAP (SHapley Additive exPlanations)** to dissect the machine learning decisions, converting complex mathematical features into clean, plain-language insights for clinicians.
-3. **SOP-Grounded Advisory (RAG)**: Integrates a guardrailed Large Language Model chatbot powered by **Google Gemini** and **LangChain**, providing customized clinical and operational action plans strictly aligned with certified Standard Operating Procedures (SOPs).
+EpiSentinel exploits this biological lag. By monitoring **lagged case trends + climate signals** from the past 1–4 weeks, it predicts outbreaks **7 days before they peak** — giving health authorities a real intervention window.
 
 ---
 
-## ⚡ Key Features by Persona
+## 🤖 Model & Results
 
-### 🏥 Operational & Strategic Personas
+### What Is Predicted
 
-*   **District Health Officer (DHO) Portal**: 
-    *   Interactive, localized D3.js district heatmap.
-    *   Clear risk status tags (`LOW`, `MODERATE`, `HIGH`) and dynamic outbreak warnings.
-    *   Tactical action items: specific SOP recommendations on fogging, larvicide application, and household surveys based on SHAP drivers.
-*   **Hospital Operations & Clinical Managers**:
-    *   Surge bed capacity planning guides.
-    *   Clinical supply checklists (platelet reserves, IV fluids, NS1 rapid diagnostics) tailored to local risk metrics.
-    *   Workforce rota planning advice based on predicted case trends.
-*   **State Health Officials**:
-    *   Statewide aggregate command map of Karnataka districts.
-    *   Active Alert tracking (counting districts exceeding the $>50\%$ risk threshold).
-    *   State-wide resource allocation, supply redirection guidance, and regional escalation alerts.
+| Target | Type | Definition |
+|---|---|---|
+| `target_outbreak_plus1` | Binary (0/1) | Will next week's dengue cases exceed the district's historical 75th-percentile threshold? |
+| `target_cases_plus1` | Regression (int) | How many cases will be reported next week? (used as secondary output in early experiments) |
 
-### ⚙️ Core Technical Capabilities
+**The production model predicts `target_outbreak_plus1`** — the binary outbreak classification. An "outbreak" is defined per-district using `district_case_q75` (the district's own historical 75th-percentile weekly count), making the threshold locally calibrated rather than statewide.
 
-*   🔮 **Multi-Model ML Pipeline**: Ensemble of Long Short-Term Memory (LSTM) neural networks (analyzing temporal trends over a 30-day window) and XGBoost/Random Forest models (evaluating daily spatial feature snapshots).
-*   🗺️ **Interactive D3.js Geospatial Layer**: Seamless SVG-rendered vector map of Karnataka with intuitive interactive zooms, custom path tooltips, and real-time risk-scaled color scales (Glassmorphism layout).
-*   🛡️ **SOP-Grounded Advisory Chatbot (Sentinel AI)**: RAG chatbot strictly grounded on internal Standard Operating Procedures (`context.md`).
-*   ⚖️ **Explainable AI (XAI)**: Built-in SHAP explanation breakdowns rendering mathematical feature importances into clear, plain-language statements (e.g., *"Risk is elevated due to a 30% surge in cumulative rainfall 14 days ago"*).
-*   🔒 **Clinical & Domain Guardrails**: Hardcoded validation routines preventing hallucinated medical dosages, out-of-domain answers (e.g., general coding), or off-topic prompt injections.
+### Training Data
+
+| Split | Years |
+|---|---|
+| Train | 2017 – 2021 |
+| Validation | 2022 |
+| Test | 2023 |
+
+Each row = one **district × ISO week** combination (~30 districts × ~52 weeks × 7 years ≈ 10,000+ rows).
+
+**Feature groups used:**
+
+| Group | Features |
+|---|---|
+| Epidemiology | `dengue_cases_reported`, `dengue_deaths_weekly`, `cases_per_100k` |
+| Lagged cases | `cases_lag1`, `cases_lag2`, `cases_lag3` (1–3 weeks ago) |
+| Rolling averages | `cases_roll2_mean`, `cases_roll4_mean` (2-week and 4-week) |
+| Current weather | `temperature_mean_week`, `humidity_mean_week`, `rainfall_total_week`, `temperature_max_week`, `humidity_max_week` |
+| Lagged weather | `temperature_mean_week_lag1/2`, `humidity_mean_week_lag1/2`, `rainfall_total_week_lag1/2` |
+| Seasonality | `week_sin`, `week_cos` (circular encoding of ISO week) |
+| Population | `worldpop_total`, `worldpop_density_per_km2` |
+
+**Features explicitly excluded** (geographic identity leakage):
+- `district` — model must generalize across districts, not memorize them
+- `population_2011` — constant per district; acts as a disguised district ID
+- `district_case_q75` — per-district historical constant; re-encodes geographic identity as a float
+- `year` — temporal shortcut with no meaning at deployment time
+
+### Experiments & Metrics
+
+Four distinct training runs were conducted. All evaluated on 2023 test data.
+
+#### Run A — Individual Models (baseline, with population features)
+
+| Model | Threshold | ROC-AUC | Precision | Recall | **F1** |
+|---|---|---|---|---|---|
+| CatBoost | 0.25 | 0.826 | 0.687 | 0.769 | **0.725** |
+| XGBoost | 0.16 | 0.817 | 0.630 | 0.820 | 0.712 |
+| LightGBM | 0.16 | 0.809 | 0.658 | 0.772 | 0.710 |
+| RandomForest | 0.22 | 0.818 | 0.609 | 0.846 | 0.708 |
+| Poisson Regressor | — | 0.481 | 0.669 | 0.692 | 0.680 |
+
+#### Run B — Weighted Ensemble (district + population_2011 dropped) ✅ Production
+
+| Model | Threshold | ROC-AUC | PR-AUC | Precision | Recall | **F1** |
+|---|---|---|---|---|---|---|
+| **WeightedEnsemble** | **0.15** | **0.821** | **0.825** | 0.622 | **0.856** | **0.720** |
+| CatBoost | 0.16 | 0.826 | 0.829 | 0.613 | 0.856 | 0.714 |
+| XGBoost | 0.14 | 0.815 | 0.819 | 0.626 | 0.825 | 0.711 |
+| RandomForest | 0.26 | 0.818 | 0.825 | 0.622 | 0.823 | 0.709 |
+| LightGBM | 0.10 | 0.813 | 0.819 | 0.613 | 0.836 | 0.707 |
+
+#### Run C — Weighted Ensemble (standardized features)
+
+| Model | ROC-AUC | Precision | Recall | F1 |
+|---|---|---|---|---|
+| WeightedEnsemble | 0.821 | 0.622 | 0.856 | 0.720 |
+| CatBoost | 0.827 | 0.608 | 0.867 | 0.715 |
+| LightGBM | 0.815 | 0.667 | 0.769 | 0.714 |
+
+#### Run D — XGBoost v4 (leakage-fixed, recall-floor threshold)
+
+A rigorous single-model pipeline that fixed 6 specific methodological issues from earlier runs:
+
+| Fix Applied | Issue Addressed |
+|---|---|
+| Dropped `district_case_q75` from features | Geographic identity leakage disguised as a float |
+| Dropped `is_unreliable_2017_peak_week` from features | Audit flag that doesn't exist at inference time |
+| Panel-aware calendar CV (not row-index split) | Earlier CV mixed future rows from late districts into training |
+| Recall floor ≥ 0.85 in threshold selection | Missing an outbreak is far more costly than a false alarm |
+| Final model evaluated on true held-out test set | Previous code evaluated the CV-refitted estimator |
+| `year` excluded from features | Temporal shortcut with no deployment-time meaning |
+
+**Hyperparameter search (RandomizedSearchCV, 40 iterations, 5-fold panel CV):**
+
+| Parameter | Search Space |
+|---|---|
+| `n_estimators` | 50, 100, 150, 200, 250, 300 |
+| `max_depth` | 3, 4, 5, 6, 7, 8, 9 |
+| `learning_rate` | 0.01, 0.03, 0.05, 0.08, 0.10, 0.15, 0.20 |
+| `subsample` | 0.6, 0.7, 0.8, 0.9, 1.0 |
+| `colsample_bytree` | 0.6, 0.7, 0.8, 0.9, 1.0 |
+
+Optimal threshold found: **0.3098** (with enforced recall ≥ 85%).
+
+### Final Production Model
+
+The production model is a **Weighted Ensemble** of 5 sub-models. Weights were optimized on 2022 validation F1 using Dirichlet distribution sampling:
+
+| Sub-model | Weight |
+|---|---|
+| XGBoost | **49.5%** |
+| CatBoost | 29.7% |
+| Poisson Regressor | 10.8% |
+| Random Forest | 9.1% |
+| LightGBM | 0.9% |
+
+**Test set performance (2023 data, threshold = 0.15):**
+
+| Metric | Score |
+|---|---|
+| ROC-AUC | **0.821** |
+| PR-AUC | **0.825** |
+| Precision | 0.622 |
+| **Recall** | **0.856** |
+| F1 | **0.720** |
+| True Positives (outbreaks caught) | 522 / 610 |
+| False Negatives (outbreaks missed) | 88 / 610 |
+
+> Recall is intentionally prioritized. A missed outbreak (false negative) means no intervention — far more dangerous than a false alarm.
+
+### Key Features (SHAP)
+
+Global SHAP analysis on the XGBoost model shows what actually drives predictions:
+
+| Rank | Feature | Direction |
+|---|---|---|
+| 1 | 4-week rolling avg of cases | ↑ more → higher risk |
+| 2 | Avg temperature 2 weeks ago | ↑ hotter → higher risk |
+| 3 | 2-week rolling avg of cases | ↑ more → higher risk |
+| 4 | Week of year | Later weeks → higher risk |
+| 5 | Cases 3 weeks ago | ↑ more → higher risk |
+| 6 | Total rainfall last week | ↑ more rain → higher risk |
+| 7 | Cases per 100k population | ↑ higher rate → higher risk |
 
 ---
 
-## 🛠️ Tech Stack Breakdown
+## 🏗️ System Architecture
 
-| Layer | Technology | Key Utility |
-| :--- | :--- | :--- |
-| **Frontend UI** | HTML5, CSS3, ES6+ Javascript | Modern glassmorphism system, responsive layout grids, sidebar transitions |
-| **Visualization** | D3.js (v7), Lucide Icons | Responsive GeoJSON SVG rendering, dynamic geographic scaling, custom vector path overlays |
-| **Backend API** | FastAPI, Uvicorn | High-performance async router, Pydantic data schemas, Static file mounting |
-| **AI Advisory (RAG)** | LangChain, Google Gemini API | Grounded LLM advisory generation, Pydantic validation, structured prompt engineering |
-| **Machine Learning** | XGBoost, Scikit-Learn, PyTorch | Ensemble predictions (Random Forest, XGBoost), LSTM temporal prediction models |
-| **Explainability (XAI)**| SHAP | Extraction of shapley values mapped directly to API outputs for dashboard explainability |
-| **Data Formats** | GeoJSON, JSON | Topographic boundary representation, prediction records schema |
+```
+[Input CSV: district × week features]
+              │
+              ▼
+   ┌──────────────────────────┐
+   │   WeightedEnsemble       │
+   │  XGBoost  (49.5%)        │
+   │  CatBoost (29.7%)        │
+   │  Poisson  (10.8%)        │
+   │  RF       ( 9.1%)        │
+   │  LightGBM ( 0.9%)        │
+   └────────────┬─────────────┘
+                │  Risk probability (0–1)
+                ▼
+   ┌──────────────────────────┐
+   │  Threshold = 0.15        │
+   │  Critical / High / Low   │
+   └────────────┬─────────────┘
+                │
+     ┌──────────┴──────────┐
+     ▼                     ▼
+┌──────────────┐    ┌──────────────────────┐
+│ D3.js Map    │    │ Sentinel AI Chatbot  │
+│ (Frontend)   │    │ Gemini + LangChain   │
+│ Risk heatmap │    │ SOP-grounded advice  │
+└──────────────┘    └──────────────────────┘
+```
+
+The FastAPI backend:
+1. Serves the static frontend dashboard
+2. Exposes `/predict` — accepts a CSV upload, runs it through the ensemble, returns risk scores per district
+3. Exposes `/chat/district` and `/chat/state` — Gemini-powered advisory endpoints grounded on internal SOPs
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer | Technology |
+|---|---|
+| **ML Models** | XGBoost, CatBoost, LightGBM, Scikit-Learn (RF), Statsmodels (Poisson) |
+| **Explainability** | SHAP (TreeExplainer) |
+| **Backend API** | FastAPI, Uvicorn |
+| **AI Advisory** | LangChain, Google Gemini API |
+| **Frontend** | HTML5, CSS3, Vanilla JS |
+| **Visualization** | D3.js v7 (GeoJSON district maps) |
+| **Data** | Pandas, NumPy |
+| **Serialization** | Joblib (.joblib model artifacts) |
+
+---
+
+## 📂 Project Structure
+
+```
+EpiSentinel/
+│
+├── data/
+│   ├── raw/                              # Spatial boundaries & test inputs
+│   │   ├── karnataka_districts.json
+│   │   ├── india_states.geojson
+│   │   ├── state_map_urls.json
+│   │   └── synthetic_test_data.csv
+│   └── processed/                        # Training datasets & evaluation metrics
+│       ├── model_ready_district_week_trainable.csv
+│       ├── with_pop_model_ready_district_week_trainable.csv
+│       ├── ndvi+pop_model_ready_district_week_trainable.csv
+│       └── metrics/                      # Per-run metric CSVs & SHAP outputs
+│           ├── top5_metrics_plus1_no_district_pop.csv
+│           ├── top5_metrics_plus1_standardised.csv
+│           ├── top5_metrics_plus1_root.csv
+│           ├── ensemble_vs_catboost_plus1.csv
+│           ├── shap_top10_per_model_no_pop.csv
+│           └── shap_top10_per_model_standardised.csv
+│
+├── models/
+│   ├── final/                            # Production models loaded by the dashboard
+│   │   ├── weighted_ensemble_plus1_near_optimal_no_district_pop.joblib  ← PRIMARY
+│   │   ├── ensemble_plus1_near_optimal_no_district_pop.json             ← Metrics/weights
+│   │   └── episentinel_pipeline.joblib                                  ← XGBoost fallback
+│   └── research_experiments/             # Historical training runs (for reference)
+│       ├── random_forest/                # RF scripts, SHAP reports, predictions
+│       ├── xgboost/                      # XGBoost v4 pipeline, PR curves, SHAP
+│       ├── final_model_no_district_pop/  # Ensemble experiment artifacts
+│       └── final_model_no_district_pop_standardised/
+│
+├── dashboard/
+│   ├── frontend/                         # Static web dashboard (served by FastAPI)
+│   │   ├── index.html                    # Main district map view
+│   │   ├── input.html                    # CSV upload interface
+│   │   ├── style.css                     # Glassmorphism design system
+│   │   ├── app.js                        # D3.js map rendering & chatbot shell
+│   │   └── data.js                       # Prediction data & district name mappings
+│   └── backend/                          # FastAPI application
+│       ├── main.py                       # App entrypoint, static file mounting
+│       ├── predict_router.py             # /predict endpoint (model inference)
+│       ├── router.py                     # /chat/district, /chat/state endpoints
+│       ├── episentinel_chatbot.py        # RAG logic, Gemini integration, guardrails
+│       ├── context.md                    # SOP grounding document for the chatbot
+│       ├── requirements.txt              # Python dependencies
+│       └── .env                          # API keys (not committed)
+│
+├── archive/                              # Legacy code preserved for reference
+│   └── EpiSentinel_Ishan/
+│
+├── EpiSentinel_Project_Info.md
+├── .gitignore
+└── README.md
+```
 
 ---
 
 ## 🚀 Getting Started
 
-### 📋 Prerequisites
-Ensure you have the following installed on your machine:
-*   **Python**: `3.10` or higher
-*   **Modern Browser**: Chrome, Edge, Safari, or Firefox (supporting ES6 modules and D3.js v7)
-*   **Google Gemini API Key**: Obtain a developer key from the [Google AI Studio](https://aistudio.google.com).
+### Prerequisites
 
-### 🔑 Environment Configuration
-Create a `.env` file inside the `chatbot` subdirectory to authorize the Sentinel AI engine:
+- Python **3.10+**
+- A modern browser (Chrome, Firefox, Edge)
+- A **Google Gemini API key** from [Google AI Studio](https://aistudio.google.com)
+
+### Environment Setup
+
+Create a `.env` file inside `dashboard/backend/`:
 
 ```env
-# Path: chatbot/.env
-GOOGLE_API_KEY=AIzaSy...your_gemini_api_key_here...
+GOOGLE_API_KEY=your_gemini_api_key_here
 CONTEXT_MD_PATH=context.md
 GEMINI_MODEL=gemini-1.5-flash
 ```
 
-*Note: For deep clinical reasoning tasks, you can switch `GEMINI_MODEL` to `gemini-1.5-pro`.*
+> For deeper clinical reasoning, switch `GEMINI_MODEL` to `gemini-1.5-pro`.
 
-### 📦 Installation Steps
+### Running Locally
 
-1.  **Clone the Repository**:
-    ```bash
-    git clone https://github.com/BlackCatDisha/EpiSentinel.git
-    cd EpiSentinel
-    ```
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/brocxx/EpiSentinal_2.0.git
+   cd EpiSentinal_2.0
+   ```
 
-2.  **Set Up the Python Backend Environment**:
-    ```bash
-    cd dashboard/backend
-    python -m venv venv
-    
-    # On Windows (Command Prompt or PowerShell)
-    .\venv\Scripts\activate
-    
-    # On macOS/Linux
-    source venv/bin/activate
-    ```
+2. **Set up a virtual environment:**
+   ```bash
+   cd dashboard/backend
 
-3.  **Install Python Dependencies**:
-    ```bash
-    pip install -r requirements.txt
-    ```
+   # Windows
+   python -m venv venv
+   .\venv\Scripts\activate
 
-### 💻 Running Locally
+   # macOS / Linux
+   python3 -m venv venv
+   source venv/bin/activate
+   ```
 
-EpiSentinel features an integrated architecture where the FastAPI backend hosts and serves the interactive frontend static dashboard. This avoids browser CORS errors when loading the local GeoJSON maps directly from the disk.
+3. **Install dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-1.  **Launch the Unified Server**:
-    Ensure your virtual environment is active in the `dashboard/backend/` folder, then run:
-    ```bash
-    uvicorn main:app --reload --port 8000
-    ```
+4. **Launch the server:**
+   ```bash
+   uvicorn main:app --reload --port 8000
+   ```
 
-2.  **Verify the System Logs**:
-    On startup, the system will verify and cache your Standard Operating Procedures file:
-    ```text
-    INFO:     context.md loaded from 'context.md' (3528 chars).
-    INFO:     Gemini LLM initialised (model=gemini-1.5-flash).
-    INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
-    ```
-
-3.  **Access the Dashboard**:
-    Open your browser and navigate to:
-    *   **Interactive Dashboard**: [http://127.0.0.1:8000/](http://127.0.0.1:8000/) (Automatically redirects to `/dashboard/`)
-    *   **Swagger API Documentation**: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs) (Interactive endpoints playground)
+5. **Open the dashboard:**
+   - Dashboard: [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
+   - Upload & predict: [http://127.0.0.1:8000/input.html](http://127.0.0.1:8000/input.html)
+   - API docs (Swagger): [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
 
 ---
 
-## 📂 Project Directory Structure
+## 🔌 API Reference
 
-Below is the directory architecture of EpiSentinel, organizing its predictive, visual, and language-based components:
+### `POST /predict`
 
-```directory
-EpiSentinel/
-│
-├── data/                                # Unified Data Storage
-│   ├── raw/                             # Spatial boundaries & synthetic test datasets
-│   │   ├── india_states.geojson
-│   │   ├── karnataka_districts.json
-│   │   ├── state_map_urls.json
-│   │   └── synthetic_test_data.csv
-│   └── processed/                       # Trainable panel datasets & evaluation metrics
-│       ├── model_ready_district_week_trainable.csv
-│       ├── ndvi+pop_model_ready_district_week_trainable.csv
-│       ├── with_pop_model_ready_district_week_trainable.csv
-│       └── metrics/                     # Run metric summaries (combined, long, top10)
-│
-├── models/                              # Serialized ML Pipeline Artifacts
-│   ├── final/                           # Production-ready models (Ensemble & XGBoost fallback)
-│   │   ├── weighted_ensemble_plus1_near_optimal_no_district_pop.joblib
-│   │   ├── ensemble_plus1_near_optimal_no_district_pop.json
-│   │   └── episentinel_pipeline.joblib
-│   └── research_experiments/             # Historical training runs & sub-models
-│       ├── random_forest/               # RF scripts, prediction outputs, & feature logs
-│       ├── xgboost/                     # XGBoost validation curves, SHAP explainers
-│       ├── final_model_no_district_pop/ # Baseline ensemble metrics
-│       └── final_model_no_district_pop_standardised/
-│
-├── dashboard/                           # Web Dashboard Components
-│   ├── frontend/                        # Web dashboard client (D3.js maps, layouts, charts)
-│   │   ├── index.html
-│   │   ├── input.html
-│   │   ├── style.css
-│   │   ├── app.js
-│   │   └── data.js
-│   └── backend/                         # FastAPI predictive endpoints & RAG Chatbot
-│       ├── .env                         # API configurations & credentials
-│       ├── main.py                      # FastAPI entrypoint (serves static dashboard)
-│       ├── router.py                    # Endpoint declarations (/chat/district, /chat/state)
-│       ├── predict_router.py            # Prediction metadata routing
-│       ├── episentinel_chatbot.py       # Core Pydantic validators, prompts & RAG logic
-│       ├── context.md                   # SOP Grounding documents
-│       └── requirements.txt             # Python backend dependencies
-│
-├── archive/                             # Safe keeping of legacy/duplicate folders
-│   └── EpiSentinel_Ishan/               # Preserved user-specific historical workspace clone
-│
-├── EpiSentinel_Project_Info.md          # Internal system specifications markdown
-├── .gitignore                           # Git ignore mappings
-└── README.md                            # Comprehensive system documentation
+Upload a CSV of district-week feature rows. Returns outbreak risk scores per district.
+
+**Request:** `multipart/form-data` with a `.csv` file.
+
+**Required columns:** `iso_week`, `cases_lag1`, `cases_lag2`, `cases_lag3`, `cases_roll2_mean`, `cases_roll4_mean`, `temperature_mean_week`, `humidity_mean_week`, `rainfall_total_week`, `temperature_mean_week_lag1`, `temperature_mean_week_lag2`, `humidity_mean_week_lag1`, `humidity_mean_week_lag2`, `rainfall_total_week_lag1`, `rainfall_total_week_lag2`, `week_sin`, `week_cos`, `worldpop_total`, `worldpop_density_per_km2`, `cases_per_100k`
+
+**Response:**
+```json
+{
+  "predictions": {
+    "Raichur": {
+      "risk_score": 84.2,
+      "status": "Critical",
+      "predicted_cases": 33,
+      "top_driver": "Cases Roll4 Mean",
+      "model_used": "WeightedEnsemble"
+    }
+  }
+}
+```
+
+Risk thresholds:
+- `>= threshold × 1.5` → **Critical**
+- `>= threshold` → **High**
+- `< threshold` → **Low**
+
+---
+
+### `POST /chat/district`
+
+Get SOP-grounded action plans for a single district.
+
+```json
+{
+  "role": "district_health_officer",
+  "district_name": "Raichur",
+  "risk_score": 0.84,
+  "predicted_cases": 47,
+  "shap_drivers": [
+    {
+      "feature": "cases_roll4_mean",
+      "display_name": "4-week rolling average of cases",
+      "shap_value": 0.72,
+      "feature_value": 18.5
+    }
+  ],
+  "user_message": "What immediate actions should I deploy this week?"
+}
 ```
 
 ---
 
-## 🔌 API Endpoints & Basic Usage
+### `POST /chat/state`
 
-FastAPI serves two core chatbot interfaces mapping to strategic and tactical use-cases.
-
-### 1. District Advisory Chat (`/chat/district`)
-For DHOs or Facility Managers seeking actions on a single district.
-*   **Method**: `POST`
-*   **URL**: `http://localhost:8000/chat/district`
-*   **Sample Request Body**:
-    ```json
-    {
-      "role": "district_health_officer",
-      "district_name": "Raichur",
-      "risk_score": 0.84,
-      "predicted_cases": 47,
-      "shap_drivers": [
-        {
-          "feature": "cases_roll4_mean",
-          "display_name": "4-week rolling average of reported cases",
-          "shap_value": 0.72,
-          "feature_value": 18.5
-        },
-        {
-          "feature": "rainfall_total_week_lag1",
-          "display_name": "total rainfall last week",
-          "shap_value": 0.41,
-          "feature_value": 97.6
-        }
-      ],
-      "user_message": "What immediate tactical actions should I deploy this week?"
-    }
-    ```
-*   **Sample Response Output**:
-    ```json
-    {
-      "response": "Based on Raichur's critical risk (84.0% Outbreak Probability, 47 predicted cases) driven by high rolling cases and heavy recent rainfall (97.6mm), execute standard Level 3 transmission protocols immediately:\n1. Deploy emergency vector control teams for targeted indoor residual spraying and larvicide application in the highest-burden wards.\n2. Initiate daily mosquito breeding checks in stagnant water locations.\n3. Mobilize auxiliary nursing midwives (ANMs) to carry out active household fever surveys. Refer to SOP Section 3.2 for field assignment guidelines."
-    }
-    ```
+Get state-level resource allocation guidance across multiple districts.
 
 ---
 
-### 2. State-Level Aggregate Chat (`/chat/state`)
-Used by state command centers to evaluate multi-district priority lists.
-*   **Method**: `POST`
-*   **URL**: `http://localhost:8000/chat/state`
-*   **Sample Request Body**:
-    ```json
-    {
-      "role": "state_official",
-      "aggregates": {
-        "total_predicted_cases": 312,
-        "average_risk_score": 0.61,
-        "active_alerts": 3
-      },
-      "districts": [
-        {
-          "district_name": "Raichur",
-          "risk_score": 0.84,
-          "predicted_cases": 47,
-          "shap_drivers": [
-            {
-              "feature": "cases_roll4_mean",
-              "display_name": "4-week rolling average of reported cases",
-              "shap_value": 0.72,
-              "feature_value": 18.5
-            }
-          ]
-        },
-        {
-          "district_name": "Vijayapura",
-          "risk_score": 0.21,
-          "predicted_cases": 3,
-          "shap_drivers": [
-            {
-              "feature": "iso_week",
-              "display_name": "week of the year",
-              "shap_value": -0.31,
-              "feature_value": 12.0
-            }
-          ]
-        }
-      ],
-      "user_message": "Which districts must receive resource priority from the state depot?"
-    }
-    ```
+### Guardrails
 
----
-
-### 3. Guardrail and SOP Violations Handler
-If a user submits an off-domain prompt or requests unverified treatments (e.g. antibiotic or specific antiviral dosages not covered in the local SOP), the API returns a protective validation block:
-
-*   **Prompt**: *"What is the recommended antiviral dosage for dengue treatment?"*
-*   **Response**:
-    ```text
-    "I don't have sufficient information in the current SOPs to answer that. Please consult your state health authority guidelines."
-    ```
-*   **Prompt**: *"Can you write me a python script to sort a list?"*
-*   **Response**:
-    ```text
-    "I'm restricted to advising on dengue outbreak response based on EpiSentinel predictions and your organisation's SOPs. I can't help with that request."
-    ```
-
----
-
-## 🏗️ System Architecture & Data Pipeline
-
-EpiSentinel runs an automated, cyclical pipeline to keep predictions fresh:
+The chatbot is strictly grounded on `context.md`. Off-domain prompts are blocked:
 
 ```
-                  ┌───────────────────────────────┐
-                  │   SCHEDULED MORNING SCHEMAS  │
-                  └───────────────┬───────────────┘
-                                  │
-         ┌────────────────────────┼────────────────────────┐
-         ▼                        ▼                        ▼
-┌─────────────────┐      ┌─────────────────┐      ┌─────────────────┐
-│   IMD & ERA5    │      │  IDSP Weekly    │      │ Google GEE Sat  │
-│ Weather API     │      │  PDF Reports    │      │ (NDWI & NDVI)   │
-└────────┬────────┘      └────────┬────────┘      └────────┬────────┘
-         │                        │                        │
-         └────────────────────────┼────────────────────────┘
-                                  │
-                                  ▼
-                  ┌───────────────────────────────┐
-                  │ Feature Engineering Engine    │
-                  │ (Lags, rolling avg, breeding  │
-                  │ index: NDWI x Rain x Temp)    │
-                  └───────────────┬───────────────┘
-                                  │
-                                  ▼
-                  ┌───────────────────────────────┐
-                  │      Parallel ML Pipeline     │
-                  │   ┌───────────────────────┐   │
-                  │   │ LSTM (Temporal trends)│   │
-                  │   ├───────────────────────┤   │
-                  │   │ XGBoost (Today's snap)│   │
-                  │   └───────────┬───────────┘   │
-                  └───────────────┼───────────────┘
-                                  │ Blended Risk Scores + SHAP
-                                  ▼
-                  ┌───────────────────────────────┐
-                  │       predictions.json        │
-                  └───────────────┬───────────────┘
-                                  │
-         ┌────────────────────────┴────────────────────────┐
-         ▼                                                 ▼
-┌────────────────────────────────┐       ┌────────────────────────────────┐
-│   Interactive Geospatial map   │       │   Sentinel AI RAG Chatbot      │
-│   D3.js (Front-end Dashboard)  │       │   (FastAPI Backend / Gemini)   │
-└────────────────────────────────┘       └────────────────────────────────┘
+Prompt:   "What is the antiviral dosage for dengue?"
+Response: "I don't have sufficient information in the current SOPs to answer that."
+
+Prompt:   "Can you write a Python script?"
+Response: "I'm restricted to advising on dengue outbreak response based on EpiSentinel predictions."
 ```
 
 ---
 
-## 🚢 Deployment & CI/CD Pipeline
+## 🤝 Contributing
 
-To move EpiSentinel to a production cloud topology:
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/your-feature`
+3. Commit: `git commit -m "feat: describe your change"`
+4. Push: `git push origin feature/your-feature`
+5. Open a Pull Request
 
-*   **Containerization**: Use the multi-stage `Dockerfile` to compile and package the FastAPI application.
-*   **Serverless Pipeline**: Run the scheduled Data Ingestion Pipeline inside **AWS Lambda** (triggered weekly by Amazon EventBridge) to fetch IMD/ERA5 climate datasets, re-predict with the trained XGBoost/LSTM bins, and write the updated `predictions.json` into **AWS S3**.
-*   **Static Hosting**: The client dashboard files can be packaged and delivered globally through **AWS CloudFront** / **Vercel** / **Netlify** or run natively out of the FastAPI Docker image.
-*   **CI/CD Pipeline (GitHub Actions)**:
-    *   Lints Python logic (`ruff` or `flake8`).
-    *   Validates API router tests via `pytest`.
-    *   Builds the Docker container and deploys it automatically to **AWS ECS / Fargate** or **Google Cloud Run** upon merges to the `main` branch.
-
----
-
-## 🤝 Contributing & Code of Conduct
-
-We welcome contributions from epidemiologists, data scientists, software engineers, and public health practitioners!
-
-### How to Contribute
-1. Fork this repository.
-2. Create a feature branch: `git checkout -b feature/your-awesome-feature`.
-3. Commit your modifications: `git commit -m "feat: add detailed spatial correlation factors"`.
-4. Push the branch: `git push origin feature/your-awesome-feature`.
-5. Open a Pull Request detailing the changes, context, and verification steps.
-
-### Code of Conduct
-*   Maintain a respectful, professional, and inclusive space for all contributors.
-*   Prioritize scientific accuracy and rigorous testing, especially concerning clinical safety limits and predictive model validation.
+Contributions from epidemiologists, data scientists, and public health practitioners are especially welcome.
 
 ---
 
 ## 📄 License
 
-This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the **MIT License**.
 
 ---
+
 <div align="center">
-  <sub>Developed with 🩺 by the EpiSentinel Core Team. Protecting communities through predictive science.</sub>
+  <sub>Built to protect communities through predictive epidemiology. 🩺</sub>
 </div>
