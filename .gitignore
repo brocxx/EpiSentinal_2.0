@@ -1,3 +1,14 @@
+# Local environment files
 .env
+dashboard/backend/.env
+
+# Python build and cache artifacts
 __pycache__/
 *.pyc
+dashboard/backend/__pycache__/
+
+# Virtual Environments
+venv/
+.venv/
+dashboard/backend/venv/
+dashboard/backend/.venv/
