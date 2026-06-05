@@ -49,12 +49,23 @@ Autoregressive Epidemiological Signals and SOP-Grounded Advisory for
 District-Level Dengue Outbreak Forecasting in Karnataka, India}
 
 \author{%
-  \IEEEauthorblockN{Ekansh Nandan Sharma,\; GN Disha,\; Ishan Mahajan}
+  \IEEEauthorblockN{Ekansh Nandan Sharma}
   \IEEEauthorblockA{%
     \textit{Department of Computer Science Engineering}\\
     RV College of Engineering, Bengaluru, India\\
-    \texttt{\{ekanshnandans.cs25, gndisha.cs25,
-      ishanmahajan.cs25\}@rvce.edu.in}}
+    \texttt{ekanshnandans.cs25@rvce.edu.in}}
+  \and
+  \IEEEauthorblockN{GN Disha}
+  \IEEEauthorblockA{%
+    \textit{Department of Computer Science Engineering}\\
+    RV College of Engineering, Bengaluru, India\\
+    \texttt{gndisha.cs25@rvce.edu.in}}
+  \and
+  \IEEEauthorblockN{Ishan Mahajan}
+  \IEEEauthorblockA{%
+    \textit{Department of Computer Science Engineering}\\
+    RV College of Engineering, Bengaluru, India\\
+    \texttt{ishanmahajan.cs25@rvce.edu.in}}
   \and
   \IEEEauthorblockN{Prof.\ Saraswathi Govind Datar}
   \IEEEauthorblockA{%
@@ -885,45 +896,45 @@ interpretations.
   % ---- SHAP bar chart rendered as TikZ ----
   \begin{tikzpicture}
     \begin{scope}
-      % Feature list (bottom-to-top in bar chart order)
-      \def\barlabel{{"cases\_per\_100k",
-                      "rainfall\_lag1",
-                      "cases\_lag3",
-                      "week\_sin/cos",
-                      "cases\_roll2\_mean",
-                      "temp\_mean\_lag2",
-                      "cases\_roll4\_mean"}}
-      \def\barval{{0.071, 0.072, 0.102, 0.118, 0.120, 0.124, 0.278}}
-      \def\barcol{{"blue!45","blue!45","teal!60","orange!55","teal!60","blue!45","teal!80"}}
-
-      \def\maxval{0.278}
-      \def\barwidth{3.8cm}
-      \def\rowheight{0.50cm}
       \def\labelwidth{2.7cm}
 
-      \foreach \i in {0,...,6} {
-        \pgfmathsetmacro{\y}{\i*\rowheight}
-        \pgfmathsetmacro{\bw}{\barval[\i]/\maxval*\barwidth}
-        \pgfmathparse{\barlabel[\i]}\let\lbl\pgfmathresult
-        \pgfmathparse{\barcol[\i]}\let\col\pgfmathresult
+      % Row 0: cases_per_100k (0.071)
+      \node[anchor=east, font=\scriptsize\ttfamily, text width=\labelwidth, align=right] at (0, 0.0cm) {cases\_per\_100k};
+      \fill[blue!45, rounded corners=1pt] (0.05cm, -0.17cm) rectangle (1.02cm, 0.17cm);
+      \node[anchor=west, font=\scriptsize, color=black!70] at (1.05cm, 0.0cm) {0.071};
 
-        % Label
-        \node[anchor=east, font=\scriptsize\ttfamily,
-              text width=\labelwidth, align=right]
-          at (0, \y) {\lbl};
+      % Row 1: rainfall_total_lag1 (0.072)
+      \node[anchor=east, font=\scriptsize\ttfamily, text width=\labelwidth, align=right] at (0, 0.5cm) {rainfall\_total\_lag1};
+      \fill[blue!45, rounded corners=1pt] (0.05cm, 0.33cm) rectangle (1.03cm, 0.67cm);
+      \node[anchor=west, font=\scriptsize, color=black!70] at (1.06cm, 0.5cm) {0.072};
 
-        % Bar
-        \fill[\col, rounded corners=1pt]
-          (0.05cm, \y-0.17cm) rectangle (\bw+0.05cm, \y+0.17cm);
+      % Row 2: cases_lag3 (0.102)
+      \node[anchor=east, font=\scriptsize\ttfamily, text width=\labelwidth, align=right] at (0, 1.0cm) {cases\_lag3};
+      \fill[teal!60, rounded corners=1pt] (0.05cm, 0.83cm) rectangle (1.44cm, 1.17cm);
+      \node[anchor=west, font=\scriptsize, color=black!70] at (1.47cm, 1.0cm) {0.102};
 
-        % Value text
-        \node[anchor=west, font=\scriptsize, color=black!70]
-          at (\bw+0.08cm, \y) {\pgfmathprintnumber[fixed,precision=3]{\barval[\i]}};
-      }
+      % Row 3: week_sin/cos (0.118)
+      \node[anchor=east, font=\scriptsize\ttfamily, text width=\labelwidth, align=right] at (0, 1.5cm) {week\_sin/cos};
+      \fill[orange!55, rounded corners=1pt] (0.05cm, 1.33cm) rectangle (1.66cm, 1.67cm);
+      \node[anchor=west, font=\scriptsize, color=black!70] at (1.69cm, 1.5cm) {0.118};
+
+      % Row 4: cases_roll2_mean (0.120)
+      \node[anchor=east, font=\scriptsize\ttfamily, text width=\labelwidth, align=right] at (0, 2.0cm) {cases\_roll2\_mean};
+      \fill[teal!60, rounded corners=1pt] (0.05cm, 1.83cm) rectangle (1.69cm, 2.17cm);
+      \node[anchor=west, font=\scriptsize, color=black!70] at (1.72cm, 2.0cm) {0.120};
+
+      % Row 5: temp_mean_week_lag2 (0.124)
+      \node[anchor=east, font=\scriptsize\ttfamily, text width=\labelwidth, align=right] at (0, 2.5cm) {temp\_mean\_week\_lag2};
+      \fill[blue!45, rounded corners=1pt] (0.05cm, 2.33cm) rectangle (1.75cm, 2.67cm);
+      \node[anchor=west, font=\scriptsize, color=black!70] at (1.78cm, 2.5cm) {0.124};
+
+      % Row 6: cases_roll4_mean (0.278)
+      \node[anchor=east, font=\scriptsize\ttfamily, text width=\labelwidth, align=right] at (0, 3.0cm) {cases\_roll4\_mean};
+      \fill[teal!80, rounded corners=1pt] (0.05cm, 2.83cm) rectangle (3.85cm, 3.17cm);
+      \node[anchor=west, font=\scriptsize, color=black!70] at (3.88cm, 3.0cm) {0.278};
 
       % X-axis label
-      \node[font=\scriptsize, color=black!60] at (1.8cm, -0.4cm)
-        {Mean $|\phi_i|$ (SHAP Value)};
+      \node[font=\scriptsize, color=black!60] at (1.8cm, -0.4cm) {Mean $|\phi_i|$ (SHAP Value)};
     \end{scope}
   \end{tikzpicture}
   \caption{Global SHAP feature importance for the weighted ensemble
