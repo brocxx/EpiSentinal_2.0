@@ -1867,8 +1867,12 @@
                     const raw = d.properties.district || d.properties.ST_NM || d.properties.NAME_1 || d.properties.name;
                     const data = predictionResults && predictionResults[normalizeName(raw)];
                     if (!data) return '#334155';
-                    // Color thresholds: Red (>15%), Yellow (>10%), Green (≤10%)
-                    return data.risk_score > 15 ? '#ef4444' : data.risk_score > 10 ? '#eab308' : '#22c55e';
+                    // Color by risk status: Green=Low, Yellow=Medium/High, Red=Critical
+                    const status = data.status || '';
+                    if (status === 'Critical') return '#ef4444';      // Red
+                    if (status === 'High' || status === 'Medium') return '#eab308'; // Yellow
+                    if (status === 'Low') return '#22c55e';           // Green
+                    return '#334155';
                 })
                 .style('stroke', '#0f172a').style('stroke-width', '0.5px').style('cursor', 'pointer')
                 .on('mouseover', function (event, d) {
