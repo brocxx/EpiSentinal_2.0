@@ -1505,8 +1505,9 @@
         //  4. The API base URL is set in API_BASE_URL below.
         // =============================================================================
 
-        const INDIA_GEOJSON_URL = 'https://raw.githubusercontent.com/geohacker/india/master/state/india_state.geojson';
-        const API_BASE_URL = 'http://localhost:8000'; // ← change this to your backend URL
+        // Load Karnataka districts GeoJSON locally instead of full India map
+        const KARNATAKA_GEOJSON_PATH = './karnataka_districts.json';
+        const API_BASE_URL = 'http://localhost:8000'; // ← localhost and 127.0.0.1 are equivalent
 
 
 
@@ -1765,14 +1766,43 @@
             const formData = new FormData();
             formData.append('file', new Blob([csvString], { type: 'text/csv' }), 'data.csv');
 
-            const response = await fetch(`${API_BASE_URL}/predict`, {
-                method: 'POST',
-                body: formData
-                // Add auth headers here if needed: headers: { 'Authorization': 'Bearer <token>' }
-            });
+            let data;
+            try {
+                const response = await fetch(`${API_BASE_URL}/predict`, {
+                    method: 'POST',
+                    body: formData
+                    // Add auth headers here if needed: headers: { 'Authorization': 'Bearer <token>' }
+                });
 
-            if (!response.ok) throw new Error(`Backend ${response.status}: ${await response.text()}`);
-            const data = await response.json();
+                // If a simple static python server is running (python -m http.server)
+                // it will reject POST requests with a 501. Detect that and show
+                // an actionable message for the user to start the FastAPI backend.
+                if (response.status === 501) {
+                    alert(
+                        "Received HTTP 501 from server. It looks like you're running Python's simple file server on port 8000.\n\n" +
+                        "Stop that server and start the FastAPI backend instead:\n\n" +
+                        "cd dashboard/backend\nuvicorn main:app --reload --port 8000\n\n" +
+                        "Also ensure dependencies are installed: `pip install -r requirements.txt` and models are present in the models/final/ folder."
+                    );
+                    return;
+                }
+
+                if (!response.ok) {
+                    throw new Error(`Backend ${response.status}: ${await response.text()}`);
+                }
+
+                data = await response.json();
+            } catch (err) {
+                // Network or CORS error — provide clear instructions to run the backend
+                alert(
+                    "Could not contact backend at " + API_BASE_URL + ".\n\n" +
+                    "Make sure the FastAPI backend is running on port 8000. To start it, run:\n\n" +
+                    "cd dashboard/backend\nuvicorn main:app --reload --port 8000\n\n" +
+                    "Install dependencies first if needed: `pip install -r requirements.txt`.\n\n" +
+                    "Original error: " + err
+                );
+                return;
+            }
 
             let results = {};
             if (data.predictions && typeof data.predictions === 'object') {
@@ -1808,8 +1838,8 @@
             document.getElementById('result-loader').classList.remove('visible');
             if (!indiaGeoJSON) {
                 document.getElementById('result-loader').classList.add('visible');
-                const r = await fetch(INDIA_GEOJSON_URL);
-                if (!r.ok) throw new Error('Could not load India GeoJSON.');
+                const r = await fetch(KARNATAKA_GEOJSON_PATH);
+                if (!r.ok) throw new Error('Could not load Karnataka districts GeoJSON.');
                 indiaGeoJSON = await r.json();
                 document.getElementById('result-loader').classList.remove('visible');
             }
@@ -1833,15 +1863,16 @@
             svg.selectAll('.region').data(geojson.features).enter().append('path')
                 .attr('class', 'region').attr('d', pathGen)
                 .attr('fill', d => {
-                    const raw = d.properties.ST_NM || d.properties.NAME_1 || d.properties.name;
-                    // Always read from global predictionResults — never from stale closure
+                    // For Karnataka districts, use 'district' property
+                    const raw = d.properties.district || d.properties.ST_NM || d.properties.NAME_1 || d.properties.name;
                     const data = predictionResults && predictionResults[normalizeName(raw)];
                     if (!data) return '#334155';
-                    return data.risk_score > 70 ? '#ef4444' : data.risk_score > 50 ? '#eab308' : '#22c55e';
+                    // Color thresholds: Red (>15%), Yellow (>10%), Green (≤10%)
+                    return data.risk_score > 15 ? '#ef4444' : data.risk_score > 10 ? '#eab308' : '#22c55e';
                 })
                 .style('stroke', '#0f172a').style('stroke-width', '0.5px').style('cursor', 'pointer')
                 .on('mouseover', function (event, d) {
-                    const raw = d.properties.ST_NM || d.properties.NAME_1 || d.properties.name;
+                    const raw = d.properties.district || d.properties.ST_NM || d.properties.NAME_1 || d.properties.name;
                     const norm = normalizeName(raw);
                     const data = predictionResults && predictionResults[norm];
                     d3.select(this).style('stroke', 'white').style('stroke-width', '2px');
@@ -1866,8 +1897,7 @@
                     tooltip.classList.add('hidden');
                 })
                 .on('click', function (event, d) {
-                    const raw = d.properties.ST_NM || d.properties.NAME_1 || d.properties.name;
-                    // Pass only the name — showModal reads global predictionResults itself
+                    const raw = d.properties.district || d.properties.ST_NM || d.properties.NAME_1 || d.properties.name;
                     showModal(normalizeName(raw));
                 });
 
